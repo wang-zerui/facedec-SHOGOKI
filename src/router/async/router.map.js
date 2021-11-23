@@ -18,10 +18,22 @@ const routerMap = {
     redirect: '/login',
     component: view.tabs
   },
+  manage: {
+    name: 'Manage',
+    component: view.blank
+  },
+  usermanage: {
+    name: "用户管理",
+    component: () => import('@/pages/manage/usermanage/UserManage'),
+  },
+  face: {
+    name: "人脸管理",
+    component: () => import('@/pages/manage/usermanage/UserManage'),
+  },
   dashboard: {
     name: 'Dashboard',
     component: view.blank
-  },
+  }, 
   workplace: {
     name: '工作台',
     component: () => import('@/pages/dashboard/workplace')

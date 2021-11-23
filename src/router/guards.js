@@ -26,15 +26,15 @@ const progressStart = (to, from, next) => {
  * @param next
  * @param options
  */
-const loginGuard = (to, from, next, options) => {
-  const {message} = options
-  if (!loginIgnore.includes(to) && !checkAuthorization()) {
-    message.warning('登录已失效，请重新登录')
-    next({path: '/login'})
-  } else {
-    next()
-  }
-}
+// const loginGuard = (to, from, next, options) => {
+//   const {message} = options
+//   if (!loginIgnore.includes(to) && !checkAuthorization()) {
+//     message.warning('登录已失效，请重新登录')
+//     next({path: '/login'})
+//   } else {
+//     next()
+//   }
+// }
 
 /**
  * 权限守卫
@@ -99,6 +99,7 @@ const progressDone = () => {
 }
 
 export default {
-  beforeEach: [progressStart, loginGuard, authorityGuard, redirectGuard],
-  afterEach: [progressDone]
+  // beforeEach: [progressStart, loginGuard, authorityGuard, redirectGuard],
+  beforeEach: [],
+  afterEach: []
 }

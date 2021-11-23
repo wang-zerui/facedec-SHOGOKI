@@ -2,10 +2,10 @@
   <common-layout>
     <div class="top">
       <div class="header">
-        <img alt="logo" class="logo" src="@/assets/img/logo.png" />
+        <img alt="logo" class="logo" src="@/assets/img/xidian-logo-red.png" />
         <span class="title">{{systemName}}</span>
       </div>
-      <div class="desc">Ant Design 是西湖区最具影响力的 Web 设计规范</div>
+      <div class="desc">一个简单的人脸识别系统</div>
     </div>
     <div class="login">
       <a-form @submit="onSubmit" :form="form">
@@ -15,7 +15,7 @@
               <a-input
                 autocomplete="autocomplete"
                 size="large"
-                placeholder="admin"
+                placeholder="请输入用户名"
                 v-decorator="['name', {rules: [{ required: true, message: '请输入账户名', whitespace: true}]}]"
               >
                 <a-icon slot="prefix" type="user" />
@@ -24,7 +24,7 @@
             <a-form-item>
               <a-input
                 size="large"
-                placeholder="888888"
+                placeholder="请输入密码"
                 autocomplete="autocomplete"
                 type="password"
                 v-decorator="['password', {rules: [{ required: true, message: '请输入密码', whitespace: true}]}]"
@@ -50,7 +50,7 @@
           <a-tab-pane tab="刷脸登录" key="2">
             <a-form-item>
               <a-modal
-                title="Title"
+                title="请用微信扫码进行认证"
                 :visible="visible"
                 :confirm-loading="confirmLoading"
                 ok-text="我已完成"
@@ -58,10 +58,9 @@
                 @cancel="handleCancel"
               >
                 <a-alert :type="alertType"  v-if="error" :message="message" showIcon style="margin-bottom: 24px;" />
-                <img style="margin-top: 50px" :src="qrCodeUrl" alt="">
-                
-                <p>{{ ModalText }}</p>
+                <img style="width:100%" :src="qrCodeUrl" alt="">
               </a-modal>
+                <img style="width:100%" src="@/assets/img/fact-dec-banner.svg" alt="">
               <a-button :loading="logging" style="width: 100%;margin-top: 24px" size="large" htmlType="submit" type="primary" @click="showModal">开始认证</a-button>
             </a-form-item>
           </a-tab-pane>
@@ -125,8 +124,8 @@ export default {
         body: raw,
         redirect: 'follow'
       };
-
-      fetch("https://service-rf83c9fw-1301774019.gz.apigw.tencentcs.com/release/getQrCodeUrl", requestOptions)
+   fetch("http://124.71.174.198:8088/QRCodeServer", requestOptions)
+      // fetch("https://service-rf83c9fw-1301774019.gz.apigw.tencentcs.com/release/getQrCodeUrl", requestOptions)
         .then(response => response.json())
         .then(result => {
           // console.log(result);
@@ -138,22 +137,22 @@ export default {
       },
     handleOk() {
       this.confirmLoading = true;
-      fetch("https://service-gd6o6j0s-1301774019.gz.apigw.tencentcs.com/release/checkSuccess", {method: "POST", body: 2})
+      fetch("http://124.71.174.198:8088/checkSateServer", {method: "POST", body: JSON.stringify({"id": this.id})})
         .then(response => response.json())
         .then(response => {
-          if(response.errCode === "0"){
+          if(response.error_code === "1"){
             console.log(response);
             this.confirmLoading = false;
-            this.showAlert("success", "验证成功，你是" + response.user_id + "正在跳转...");
+            this.showAlert("success", "验证成功，你是" + response.uid + "正在跳转...");
             setTimeout(()=>{this.visible = false;}, 2000);
             // TODO:cookie中添加用户信息
-            // setTimeout(() => {
-            //   getRoutesConfig().then(result => {
-            //     const routesConfig = result.data.data
-            //     loadRoutes(routesConfig)
-            //     this.$router.push('/dashboard/workplace')
-            //   })
-            // }, 3000)
+            setTimeout(() => {
+              getRoutesConfig().then(result => {
+                const routesConfig = result.data.data
+                loadRoutes(routesConfig)
+                this.$router.push('/dashboard/workplace')
+              })
+            }, 3000)
           }else{
             this.showAlert("error", "验证失败，请重新扫码或刷新页面");
             this.confirmLoading = false;

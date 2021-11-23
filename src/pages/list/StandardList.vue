@@ -2,39 +2,27 @@
   <div>
     <a-card :bordered="false">
       <div style="display: flex; flex-wrap: wrap">
-          <head-info title="我的待办" content="8个任务" :bordered="true"/>
-          <head-info title="本周任务平均处理时间" content="32分钟" :bordered="true"/>
-          <head-info title="本周完成任务数" content="24个"/>
+          <head-info title="用户总数" :content="users.length" :bordered="true"/>
+          <head-info title="人脸总数" :content="users.length" :bordered="true"/>
       </div>
     </a-card>
     <a-card
       style="margin-top: 24px"
-      :bordered="false"
-      title="标准列表"
+      :bordered="true"
+      title="所有用户"
     >
-      <div slot="extra">
-        <a-radio-group>
-          <a-radio-button>全部</a-radio-button>
-          <a-radio-button>进行中</a-radio-button>
-          <a-radio-button>等待中</a-radio-button>
-        </a-radio-group>
-        <a-input-search style="margin-left: 16px; width: 272px;" />
-      </div>
-      <a-button type="dashed" style="width: 100%" icon="plus">添加</a-button>
-      <a-list size="large" :pagination="{showSizeChanger: true, showQuickJumper: true, pageSize: 5, total: 50}">
-        <a-list-item :key="i" v-for="i in 5">
+      <a-list size="large">
+        <a-list-item :key="index" v-for="(user, index) in users">
           <a-list-item-meta
-            description="那是一种内在的东西， 他们到达不了，也无法触及的"
+            :description="'ID:' + user.ID"
           >
-            <a-avatar slot="avatar" size="large" shape="square" src="https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png"/>
-            <a slot="title">AliPay</a>
+            <a-avatar slot="avatar" size="large" shape="square" :src="user.pic_url"/>
+            <a slot="title" :href="`#/list/user/` + user.ID">{{user.user_name}}</a>
           </a-list-item-meta>
-          <div slot="actions">
-            <a>编辑</a>
-          </div>
-          <div slot="actions">
+          <div slot="actions"> 
             <a-dropdown>
               <a-menu slot="overlay">
+                <a-menu-item><a :href="`#/list/user/` + user.ID">人脸管理</a></a-menu-item>
                 <a-menu-item><a>编辑</a></a-menu-item>
                 <a-menu-item><a>删除</a></a-menu-item>
               </a-menu>
@@ -43,15 +31,24 @@
           </div>
           <div class="list-content">
             <div class="list-content-item">
-              <span>Owner</span>
-              <p>付晓晓</p>
+              <span>
+                角色权限
+              </span>
+              <p>
+                {{user.role === "Administrator" ? "Admin" : user.role}}
+              </p>
             </div>
             <div class="list-content-item">
-              <span>开始时间</span>
-              <p>2018-07-26 22:44</p>
+              <span>性别</span>
+              <p>
+                {{ user.gender === "male" ? "男" : "女" }}
+              </p>
             </div>
             <div class="list-content-item">
-              <a-progress :percent="80" style="width: 180px" />
+              <span>出勤率</span>
+              <p>
+                <a-progress :percent="80" style="width: 180px" />
+              </p>
             </div>
           </div>
         </a-list-item>
@@ -64,7 +61,23 @@
 import HeadInfo from '../../components/tool/HeadInfo'
 export default {
   name: 'StandardList',
-  components: {HeadInfo}
+  components: {HeadInfo},
+  data() {
+    return {
+      users: []
+    }
+  },
+  created() {
+    this.users = [];
+    var requestOptions = {
+      method: 'GET',
+    };
+
+    fetch("http://124.71.174.198:8088/infoGetHttpServer", requestOptions)
+      .then(response => response.json())
+      .then(result => this.users = result.user_info)
+      .catch(error => console.log('error', error));
+    }
 }
 </script>
 
@@ -76,7 +89,10 @@ export default {
     font-size: 14px;
     margin-left: 40px;
     span{
-      line-height: 20px;
+      color: rgba(0,0,0, 0.65);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 24px;
     }
     p{
       margin: 4px 0 0;

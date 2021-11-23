@@ -1,6 +1,9 @@
 <template>
   <page-layout :avatar="currUser.avatar">
-    
+    <div slot="headerContent">
+      <div class="title">{{welcome.timeFix[lang]}}，{{currUser.name}}，{{welcome.message[lang]}}</div>
+      <div>{{currUser.position[lang]}}</div>
+    </div>
     <template slot="extra">
       <head-info class="split-right" :title="$t('project')" content="56"/>
       <head-info class="split-right" :title="$t('ranking')" content="8/24"/>
@@ -83,9 +86,9 @@ import {mapState} from 'vuex'
 import {request, METHOD} from '@/utils/request'
 
 export default {
-  name: 'WorkPlace',
+  name: 'UserManage',
   components: {Radar, HeadInfo, PageLayout},
-  i18n: require('./i18n'),
+  
   data () {
     return {
       projects: [],

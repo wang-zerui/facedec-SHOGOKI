@@ -1,9 +1,10 @@
 <template>
-  <div class="card-list">
-    <a-list
+  <div class="card-list"> 
+    <div v-if="dataSource.length">
+      <a-list
       :grid="{gutter: 24, lg: 3, md: 2, sm: 1, xs: 1}"
       :dataSource="dataSource"
-    >
+      >
       <a-list-item slot="renderItem" slot-scope="item">
         <template v-if="item.add">
           <a-button class="new-btn" type="dashed">
@@ -17,41 +18,47 @@
               <a-avatar class="card-avatar" slot="avatar" :src="item.avatar" size="large" />
               <div class="meta-content" slot="description">{{item.content}}</div>
             </a-card-meta>
-            <a slot="actions">操作一</a>
-            <a slot="actions">操作一</a>
           </a-card>
         </template>
       </a-list-item>
     </a-list>
+    </div>
+    <a-card v-show="!dataSource.length">
+      <a-icon type="loading"/>
+    </a-card>
   </div>
 </template>
 
 <script>
-const dataSource = []
-dataSource.push({
-  add: true
-})
-for (let i = 0; i < 11; i++) {
-  dataSource.push({
-    title: 'Alipay',
-    avatar: 'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png',
-    content: '在中台产品的研发过程中，会出现不同的设计规范和实现方式，但其中往往存在很多类似的页面和组件，这些类似的组件会被抽离成一套标准规范。'
-  })
-}
 
 export default {
-  name: 'CardList',
+  name: 'Demo',
   data () {
     return {
-      desc: '段落示意：蚂蚁金服务设计平台 ant.design，用最小的工作量，无缝接入蚂蚁金服生态， 提供跨越设计与开发的体验解决方案。',
+      desc: '',
       linkList: [
         {icon: 'rocket', href: '/#/', title: '快速开始'},
         {icon: 'info-circle-o', href: '/#/', title: '产品简介'},
         {icon: 'file-text', href: '/#/', title: '产品文档'}
       ],
       extraImage: 'https://gw.alipayobjects.com/zos/rmsportal/RzwpdLnhmvDJToTdfDPe.png',
-      dataSource
+      dataSource: []
     }
+  },
+  created() {
+    // this.dataSource.push({
+    //   add: true
+    // })
+    
+    setTimeout(() => {
+      for (let i = 0; i < 11; i++) {
+        this.dataSource.push({
+          title: 'Alipay',
+          avatar: 'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png',
+          content: '在中台产品的研发过程中，会出现不同的设计规范和实现方式，但其中往往存在很多类似的页面和组件，这些类似的组件会被抽离成一套标准规范。'
+        })
+      }
+    }, 3000)
   }
 }
 </script>
