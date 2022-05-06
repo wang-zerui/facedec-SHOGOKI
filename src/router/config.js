@@ -1,6 +1,7 @@
 import TabsView from '@/layouts/tabs/TabsView'
 import BlankView from '@/layouts/BlankView'
 import PageView from '@/layouts/PageView'
+import SignPage from '@/components/pdf/SignPage'
 
 // 路由配置
 const options = {
@@ -54,10 +55,15 @@ const options = {
               },
               component: () => import('@/pages/Demo')
             },
+            {
+              path: 'pdf',
+              name: "签字",
+              component: SignPage
+            }
           ]
         },
-      ]
-    },
+      ],
+    }
   ]
 }
 

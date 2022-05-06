@@ -73,7 +73,7 @@ export default {
       method: 'GET',
     };
 
-    fetch("http://124.71.174.198:8088/infoGetHttpServer", requestOptions)
+    fetch("https://service-7wtzjrxq-1301774019.gz.apigw.tencentcs.com/infoGetHttpServer", requestOptions)
       .then(response => response.json())
       .then(result => this.users = result.user_info)
       .catch(error => console.log('error', error));

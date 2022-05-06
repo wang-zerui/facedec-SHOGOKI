@@ -91,7 +91,10 @@ export default {
       visible: false,
       confirmLoading: false,
       qrCodeUrl: "",
-      id: ""
+      id: "",
+      // baseUrl: "http://43.138.171.232:8088",
+      // baseUrl: "http://localhost:8088"
+      baseUrl: "https://service-7wtzjrxq-1301774019.gz.apigw.tencentcs.com"
     }
   },
   computed: {
@@ -124,7 +127,7 @@ export default {
         body: raw,
         redirect: 'follow'
       };
-   fetch("http://124.71.174.198:8088/QRCodeServer", requestOptions)
+   fetch(`${this.baseUrl}/QRCodeServer`, requestOptions)
       // fetch("https://service-rf83c9fw-1301774019.gz.apigw.tencentcs.com/release/getQrCodeUrl", requestOptions)
         .then(response => response.json())
         .then(result => {
@@ -137,7 +140,7 @@ export default {
       },
     handleOk() {
       this.confirmLoading = true;
-      fetch("http://124.71.174.198:8088/checkSateServer", {method: "POST", body: JSON.stringify({"id": this.id})})
+      fetch(`${this.baseUrl}/checkSateServer`, {method: "POST", body: JSON.stringify({"id": this.id})})
         .then(response => response.json())
         .then(response => {
           if(response.error_code === "1"){
