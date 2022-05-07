@@ -66,7 +66,7 @@
     },
     created() {
       // TODO: 可以改为通过API获取
-      this.contracts = [
+      this.contracts = [ 
           {
             id: 1,
             title: "《销售合同》",
