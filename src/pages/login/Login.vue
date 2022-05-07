@@ -180,7 +180,7 @@ export default {
         getRoutesConfig().then(result => {
           const routesConfig = result.data.data
           loadRoutes(routesConfig)
-          this.$router.push('/dashboard/workplace')
+          this.$router.push('/')
           this.$message.success(loginRes.message, 3)
         })
       } else {

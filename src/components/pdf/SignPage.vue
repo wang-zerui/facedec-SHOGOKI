@@ -8,15 +8,15 @@
 import WebViewer from './WebViewer.vue'
 
 export default {
-name: 'SignPage',
-components: {
-    WebViewer
-},
-data () {
-    return {
-        publicPath: process.env.BASE_URL
+    name: 'SignPage',
+    components: {
+        WebViewer
+    },
+    data () {
+        return {
+            publicPath: process.env.BASE_URL
+        }
     }
-}
 }
 </script>
 

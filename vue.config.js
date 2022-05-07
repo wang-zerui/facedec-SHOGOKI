@@ -111,7 +111,7 @@ module.exports = {
     }
   },
   publicPath: process.env.VUE_APP_PUBLIC_PATH,
-  outputDir: 'dist',
+  outputDir: 'docs',
   assetsDir: 'static',
   productionSourceMap: false
 }
