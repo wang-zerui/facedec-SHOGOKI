@@ -16,7 +16,7 @@
             <a-list-item-meta
               
             >
-              <a slot="title" :href="`#/list/user/` + c.id">{{c.title}}</a>
+              <a slot="title" :href="`#/contract/${c.id}/sign`">{{c.title}}</a>
             </a-list-item-meta>
             <div slot="actions"> 
               <a-dropdown>
