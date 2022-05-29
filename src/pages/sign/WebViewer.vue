@@ -1,5 +1,18 @@
 <template>
   <div>
+    <a-upload
+      name="file"
+      accept=".pdf"
+      :data="uploadData"
+      :action="uploadUrl"
+      @change="handleChange"
+      :beforeUpload="beforeUpload"
+    >
+      <a-button> <a-icon type="upload" /> 上传新的pdf </a-button>
+    </a-upload>
+    <p>{{newPdf}}</p>
+    <a-button @click="saveSignedPdfToServer">上传签名后pdf</a-button>
+    <p>{{signedPdf}}</p>
     <div ref="viewer"></div>
   </div>
 </template>
@@ -18,18 +31,91 @@ export default {
     filename: {
       type: String,
       default: "myfile"
-    }
+    },
   },
   data(){
     return{
+      // 定义这个instance
+      instance: null,
       RESERVED_BUTTONS_INDEX: [3,6,7,8,9,15],
       downloading: false,
+      // 直接用这个URL就行，这个是我们写的上传函数，部署到阿里云了
+      uploadUrl: "https://upload-java-face-casluoiosh.cn-hangzhou.fcapp.run",
+      newPdf: "待上传，这里会展示URL",
+      signedPdf: "待上传，这里会展示url",
+      uploadData: {}
     }
   },
   methods: {
-    saveToServer(){
+    beforeUpload(file){
+      this.uploadData = {
+        "filename": file.name
+      }
+      return true;
+    },
+    handleChange(info) {
+      if (info.file.status !== 'uploading') {
+        console.log(info.file, info.fileList);
+      }
+      if (info.file.status === 'done') {
+        this.$message.success(`${info.file.name} file uploaded successfully`);
+        console.log("info",info)
+        this.newPdf = info.file.response.url;
+      } else if (info.file.status === 'error') {
+        this.$message.error(`${info.file.name} file upload failed.`);
+      }
+    },
+    async uploadNewPdf(){
+      const hide = this.$message.loading("保存中...")
+      const fileData = await this.instance.docViewer.getDocument().getFileData({});
+      const blob = new Blob([fileData], {type: 'application/pdf'});
 
-    }
+      const data = new FormData();
+      data.append('file', blob);
+      data.append('filename', "upload.pdf");
+      const result = await fetch(this.uploadUrl, {
+        method: "post",
+        body: data
+      })
+      .then(res => res.json)
+      const { code, url } = result;
+      if(code != 0) return null; 
+      hide();
+      console.log(url)
+      this.newPdf = url;
+    },
+    async saveSignedPdfToServer(){
+      const filename = "signedPdf.pdf"
+
+      
+      const utils = new ExpressUtils();
+      const hide = this.$message.loading("保存中...")
+      const xfdf = await this.instance.annotManager.exportAnnotations({});
+      const fileData = await this.instance.docViewer.getDocument().getFileData({});
+      console.log(typeof fileData)
+      // Set the annotations and document into the Utility SDK, then merge them together
+      const resp = await utils
+        .setFile(fileData)
+        .setXFDF(xfdf)
+        .merge();
+      console.log(resp)
+      // Get the resulting blob from the merge operation
+      const mergedBlob = await resp.getBlob();
+      const data = new FormData();
+      data.append('file', mergedBlob);
+      data.append('filename', filename);
+      const result = await fetch(this.uploadUrl, {
+        method: "post",
+        body: data
+      })
+      .then(res => res.json())
+      console.log(result)
+      const { code, url } = result;
+      if(code != 0) return null; 
+      hide();
+      this.signedPdf = url;
+      return url;
+    },
   },
   mounted: function () {
         let that = this;
@@ -38,7 +124,8 @@ export default {
             path: this.path,
             initialDoc: this.url, // replace with your own PDF file
           }, this.$refs.viewer).then((instance) => {
-            console.log(instance)
+            // NOTE: 注意保留这个instance
+            that.instance = instance;
             const utils = new ExpressUtils();
 
             instance.setHeaderItems(header => {

@@ -6,7 +6,7 @@
         </a-card>
         <a-card title="合同文件" style="margin-top: 24px">
             <div>
-              点击右边第一个按钮进行签字，第二个按钮保存到本地。（暂未实现更新云端文件）
+              点击右边第一个按钮进行签字，第二个按钮保存到本地
             </div>
             <WebViewer :path="`${publicPath}lib`" :url="contract.url"/>
         </a-card>
