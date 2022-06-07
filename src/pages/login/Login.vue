@@ -150,11 +150,7 @@ export default {
             setTimeout(()=>{this.visible = false;}, 2000);
             // TODO:cookie中添加用户信息
             setTimeout(() => {
-              getRoutesConfig().then(result => {
-                const routesConfig = result.data.data
-                loadRoutes(routesConfig)
-                this.$router.push('/dashboard/workplace')
-              })
+              this.$router.push('/')
             }, 3000)
           }else{
             this.showAlert("error", "验证失败，请重新扫码或刷新页面");
